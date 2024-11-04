@@ -1,15 +1,25 @@
 <template>
   <div class="passenger-detail">
     <h1>Passenger Details</h1>
-    <ul>
-      <li v-for="passenger in paginatedPassengers" :key="passenger._id">
-        <span>ID: {{ passenger._id }}</span>
-        <span>Name: {{ passenger.name }}</span>
-        <span>Trips: {{ passenger.trips }}</span>
-      </li>
-    </ul>
-    <button @click="nextPage" :disabled="!hasNextPage">Next Page</button>
-    <div v-if="error" class="error">{{ error }}</div>
+    <div v-if="passenger">
+      <div>ID: {{ passenger._id }}</div>
+      <div>Name: {{ passenger.name }}</div>
+      <div>Trips: {{ passenger.trips }}</div>
+      <h2>Airline Details</h2>
+      <div v-if="airline">
+        <div>ID: {{ airline._id }}</div>
+        <div>Name: {{ airline.name }}</div>
+        <div>Country: {{ airline.country }}</div>
+        <div>Logo: <img :src="airline.logo" alt="Airline Logo" /></div>
+        <div>Slogan: {{ airline.slogan }}</div>
+        <div>Headquarters: {{ airline.head_quaters }}</div>
+        <div>Website: <a :href="`https://${airline.website}`" target="_blank">{{ airline.website }}</a></div>
+        <div>Established: {{ airline.established }}</div>
+      </div>
+    </div>
+    <div v-else>
+      <p>Loading...</p>
+    </div>
   </div>
 </template>
 
@@ -20,43 +30,48 @@ import axios from 'axios';
 export default defineComponent({
   data() {
     return {
-      passengers: [] as Array<{ _id: string; name: string; trips: number }>,
-      currentPage: 1,
-      pageSize: 3,
-      error: null as string | null,
+      passenger: null as null | {
+        _id: string;
+        name: string;
+        trips: number;
+        airline: Array<{
+          _id: string;
+          name: string;
+          country: string;
+          logo: string;
+          slogan: string;
+          head_quaters: string;
+          website: string;
+          established: string;
+        }>;
+      },
+      airline: null as null | {
+        _id: string;
+        name: string;
+        country: string;
+        logo: string;
+        slogan: string;
+        head_quaters: string;
+        website: string;
+        established: string;
+      },
     };
   },
   async created() {
     const id = this.$route.params.id;
-    try {
-      const response = await axios.get(`https://api.instantwebtools.net/v1/passenger/${id}`);
-      this.passengers = response.data.data || [];  // 确保 passengers 是一个数组
-    } catch (error) {
-      console.error('Error fetching passenger data:', error);
-      this.error = 'Failed to load passenger details.';
-    }
-  },
-  computed: {
-    paginatedPassengers() {
-      if (Array.isArray(this.passengers)) {
-        return this.passengers.slice(
-          (this.currentPage - 1) * this.pageSize,
-          this.currentPage * this.pageSize
-        );
-      }
-      return [];
-    },
-    hasNextPage() {
-      return Array.isArray(this.passengers) && this.currentPage * this.pageSize < this.passengers.length;
-    }
+    await this.fetchPassengerDetails(id);
   },
   methods: {
-    nextPage() {
-      if (this.hasNextPage) {
-        this.currentPage++;
+    async fetchPassengerDetails(id: string) {
+      try {
+        const response = await axios.get(`https://api.instantwebtools.net/v1/passenger/${id}`);
+        this.passenger = response.data;
+        this.airline = this.passenger.airline[0]; // 获取第一个航空公司的信息
+      } catch (error) {
+        console.error('Error fetching passenger data:', error);
       }
-    }
-  }
+    },
+  },
 });
 </script>
 
@@ -75,37 +90,11 @@ h1 {
   color: #333;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
+.passenger-item {
   margin: 10px 0;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
-}
-
-button {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-
-.error {
-  color: red;
-  margin-top: 20px;
 }
 </style>

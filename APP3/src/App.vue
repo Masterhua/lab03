@@ -26,6 +26,7 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+  min-height: 100vh; /* Make sure the content takes at least the full viewport height */
 }
 
 header {
@@ -38,4 +39,16 @@ h1 {
   margin: 0; /* Remove default margin from the heading */
   font-size: 2.5rem; /* Increase font size for the heading */
 }
+
+/* Responsive design */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 2rem; /* Adjust font size for smaller screens */
+  }
+
+  #app {
+    margin-top: 30px; /* Reduce margin on smaller screens */
+  }
+}
 </style>
+

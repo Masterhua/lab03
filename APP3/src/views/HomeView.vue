@@ -4,9 +4,9 @@
     <h2>Passenger List</h2>
     <ul>
       <li v-for="passenger in passengers" :key="passenger._id" @click="goToDetails(passenger._id)">
-        <span>ID: {{ passenger._id }}</span>
-        <span>Name: {{ passenger.name }}</span>
-        <span>Trips: {{ passenger.trips }}</span>
+        <div>ID: {{ passenger._id }}</div>
+        <div>Name: {{ passenger.name }}</div>
+        <div>Trips: {{ passenger.trips }}</div>
       </li>
     </ul>
     <div v-if="loading">Loading...</div>
@@ -22,7 +22,7 @@ import axios from 'axios';
 export default defineComponent({
   data() {
     return {
-      passengers: [] as Array<{ _id: string; name: string; trips: number; airline: Array<{ _id: string; name: string }> }>,
+      passengers: [] as Array<{ _id: string; name: string; trips: number }>,
       loading: true,
       error: null as string | null,
       currentPage: 1,
@@ -30,7 +30,7 @@ export default defineComponent({
     };
   },
   async created() {
-    this.fetchPassengers();
+    await this.fetchPassengers();
   },
   methods: {
     async fetchPassengers() {
@@ -74,15 +74,8 @@ export default defineComponent({
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-  font-size: 2rem;
+h1, h2 {
   color: #333;
-}
-
-h2 {
-  margin-top: 20px;
-  font-size: 1.5rem;
-  color: #444;
 }
 
 ul {
