@@ -15,18 +15,18 @@
   
   <style scoped>
   .not-found {
-    text-align: center; /* Center align text */
-    margin-top: 50px; /* Add margin to the top */
+    text-align: center;
+    margin-top: 50px;
   }
   
   h1 {
-    font-size: 2rem; /* Increase font size for the heading */
-    color: #333; /* Darker color for the heading */
+    font-size: 2rem;
+    color: #333;
   }
   
   p {
-    font-size: 1.2rem; /* Increase font size for the paragraph */
-    color: #666; /* Lighter color for the paragraph */
+    font-size: 1.2rem;
+    color: #666;
   }
   </style>
   

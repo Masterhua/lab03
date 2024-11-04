@@ -66,7 +66,7 @@ export default defineComponent({
       try {
         const response = await axios.get(`https://api.instantwebtools.net/v1/passenger/${id}`);
         this.passenger = response.data;
-        this.airline = this.passenger.airline[0]; // 获取第一个航空公司的信息
+        this.airline = this.passenger.airline[0];
       } catch (error) {
         console.error('Error fetching passenger data:', error);
       }
