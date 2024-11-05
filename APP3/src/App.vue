@@ -26,28 +26,28 @@ export default defineComponent({
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
-  min-height: 100vh; /* Make sure the content takes at least the full viewport height */
+  min-height: 100vh;
 }
 
 header {
-  background-color: #35495e; /* Dark background color for header */
-  color: white; /* White text color for better contrast */
-  padding: 20px 0; /* Add padding to the header */
+  background-color: #35495e;
+  color: white;
+  padding: 20px 0;
 }
 
 h1 {
-  margin: 0; /* Remove default margin from the heading */
-  font-size: 2.5rem; /* Increase font size for the heading */
+  margin: 0;
+  font-size: 2.5rem;
 }
 
-/* Responsive design */
+
 @media (max-width: 600px) {
   h1 {
-    font-size: 2rem; /* Adjust font size for smaller screens */
+    font-size: 2rem; 
   }
 
   #app {
-    margin-top: 30px; /* Reduce margin on smaller screens */
+    margin-top: 30px;
   }
 }
 </style>

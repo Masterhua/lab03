@@ -16,6 +16,8 @@
         <div>Website: <a :href="`https://${airline.website}`" target="_blank">{{ airline.website }}</a></div>
         <div>Established: {{ airline.established }}</div>
       </div>
+      <button @click="handleEdit">Edit</button>
+      <div v-if="showMessage" class="flash-message">Your edit is successful!</div>
     </div>
     <div v-else>
       <p>Loading...</p>
@@ -24,53 +26,46 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
-  data() {
-    return {
-      passenger: null as null | {
-        _id: string;
-        name: string;
-        trips: number;
-        airline: Array<{
-          _id: string;
-          name: string;
-          country: string;
-          logo: string;
-          slogan: string;
-          head_quaters: string;
-          website: string;
-          established: string;
-        }>;
-      },
-      airline: null as null | {
-        _id: string;
-        name: string;
-        country: string;
-        logo: string;
-        slogan: string;
-        head_quaters: string;
-        website: string;
-        established: string;
-      },
-    };
-  },
-  async created() {
-    const id = this.$route.params.id;
-    await this.fetchPassengerDetails(id);
-  },
-  methods: {
-    async fetchPassengerDetails(id: string) {
+  setup() {
+    const passenger = ref(null);
+    const airline = ref(null);
+    const showMessage = ref(false);
+    const router = useRouter();
+
+    const fetchPassengerDetails = async (id: string) => {
       try {
         const response = await axios.get(`https://api.instantwebtools.net/v1/passenger/${id}`);
-        this.passenger = response.data;
-        this.airline = this.passenger.airline[0];
+        passenger.value = response.data;
+        airline.value = passenger.value.airline[0];
       } catch (error) {
         console.error('Error fetching passenger data:', error);
       }
-    },
+    };
+
+    const handleEdit = () => {
+      showMessage.value = true;
+      setTimeout(() => {
+        showMessage.value = false;
+        router.push({ name: 'HomeView' });
+      }, 5000);
+    };
+
+    return {
+      passenger,
+      airline,
+      showMessage,
+      fetchPassengerDetails,
+      handleEdit,
+    };
+  },
+  created() {
+    const id = this.$route.params.id;
+    this.fetchPassengerDetails(id);
   },
 });
 </script>
@@ -90,11 +85,15 @@ h1 {
   color: #333;
 }
 
-.passenger-item {
-  margin: 10px 0;
-  padding: 10px;
-  border: 1px solid #ccc;
+.flash-message {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
   border-radius: 4px;
-  background-color: #fff;
+  margin-top: 10px;
 }
 </style>
