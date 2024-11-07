@@ -26,22 +26,43 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue';
+import { defineComponent, ref, onMounted } from 'vue';
 import axios from 'axios';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
+
+interface Airline {
+  _id: string;
+  name: string;
+  country: string;
+  logo: string;
+  slogan: string;
+  head_quaters: string;
+  website: string;
+  established: string;
+}
+
+interface Passenger {
+  _id: string;
+  name: string;
+  trips: number;
+  airline: Airline[];
+}
 
 export default defineComponent({
   setup() {
-    const passenger = ref(null);
-    const airline = ref(null);
+    const passenger = ref<Passenger | null>(null);
+    const airline = ref<Airline | null>(null);
     const showMessage = ref(false);
     const router = useRouter();
+    const route = useRoute();
 
     const fetchPassengerDetails = async (id: string) => {
       try {
         const response = await axios.get(`https://api.instantwebtools.net/v1/passenger/${id}`);
-        passenger.value = response.data;
-        airline.value = passenger.value.airline[0];
+        if (response.data) {
+          passenger.value = response.data as Passenger;
+          airline.value = passenger.value.airline && passenger.value.airline.length > 0 ? passenger.value.airline[0] : null;
+        }
       } catch (error) {
         console.error('Error fetching passenger data:', error);
       }
@@ -55,17 +76,19 @@ export default defineComponent({
       }, 5000);
     };
 
+    onMounted(() => {
+      const id = route.params.id as string;
+      if (id) {
+        fetchPassengerDetails(id);
+      }
+    });
+
     return {
       passenger,
       airline,
       showMessage,
-      fetchPassengerDetails,
       handleEdit,
     };
-  },
-  created() {
-    const id = this.$route.params.id;
-    this.fetchPassengerDetails(id);
   },
 });
 </script>
