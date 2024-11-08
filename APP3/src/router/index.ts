@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import type { RouteLocationNormalized } from 'vue-router';
 import HomeView from '@/views/HomeView.vue';
 import PassengerDetail from '@/views/PassengerDetail.vue';
 import axios from 'axios';
@@ -14,10 +15,11 @@ const routes = [
     name: 'PassengerDetail',
     component: PassengerDetail,
     props: true,
-    beforeEnter: async (to) => {
+    beforeEnter: async (to: RouteLocationNormalized) => {
       try {
         const response = await axios.get(`https://api.instantwebtools.net/v1/passenger/${to.params.id}`);
         const passengerData = response.data;
+
         if (passengerData) {
           to.params.passengerData = passengerData;
         } else {
